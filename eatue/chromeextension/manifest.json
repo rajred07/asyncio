@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "PlaylistGenius - Watch Later Sync",
+  "version": "2.0.0",
+  "description": "Sync your YouTube Watch Later playlist to PlaylistGenius and get AI-powered smart playlists.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.youtube.com/*",
+    "https://www.googleapis.com/*",
+    "http://localhost:8000/*",
+    "http://localhost:8001/*",
+    "http://127.0.0.1:8000/*",
+    "http://127.0.0.1:8001/*",
+    "http://localhost:3000/*",
+    "http://127.0.0.1:3000/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

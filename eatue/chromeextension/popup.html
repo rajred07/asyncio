@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlaylistGenius</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 340px;
+      min-height: 200px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-icon {
+      font-size: 24px;
+    }
+
+    .header h1 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .header p {
+      font-size: 11px;
+      opacity: 0.75;
+      margin-top: 1px;
+    }
+
+    .body {
+      padding: 16px 20px;
+    }
+
+    /* ── Auth Error State ───────────────────────── */
+    .auth-error {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 0;
+      text-align: center;
+    }
+
+    .auth-error .icon { font-size: 36px; }
+
+    .auth-error h2 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #f87171;
+    }
+
+    .auth-error p {
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.5;
+    }
+
+    .auth-error .login-btn {
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .auth-error .login-btn:hover { opacity: 0.85; }
+
+    /* ── Main UI ────────────────────────────────── */
+    .main-ui {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* User badge */
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #1a1a2e;
+      border: 1px solid #2d2d4e;
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .user-info { flex: 1; min-width: 0; }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-sub {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 1px;
+    }
+
+    .logout-btn {
+      background: none;
+      border: none;
+      color: #6b7280;
+      font-size: 11px;
+      cursor: pointer;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+
+    .logout-btn:hover { color: #f87171; }
+
+    /* Settings row */
+    .setting-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .setting-row label {
+      font-size: 12px;
+      color: #9ca3af;
+      flex-shrink: 0;
+    }
+
+    .setting-row input {
+      flex: 1;
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 8px;
+      color: #fff;
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .setting-row input:focus { border-color: #7c3aed; }
+
+    /* Import button */
+    #importBtn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    #importBtn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+    #importBtn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* Status box */
+    #statusBox {
+      display: none;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      padding: 14px;
+      gap: 10px;
+      flex-direction: column;
+    }
+
+    #statusBox.show { display: flex; }
+    #statusBox.error { border-color: #dc2626; background: #1f0a0a; }
+    #statusBox.success { border-color: #16a34a; background: #0a1f0f; }
+
+    .status-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #374151;
+      border-top-color: #7c3aed;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .spinner.hidden { display: none; }
+
+    #statusText {
+      font-size: 13px;
+      color: #d1d5db;
+      line-height: 1.4;
+    }
+
+    /* Progress bar */
+    .progress-wrap {
+      height: 4px;
+      background: #1f2937;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    #progressBar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #7c3aed, #2563eb);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    .progress-label {
+      font-size: 11px;
+      color: #6b7280;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Done state */
+    .done-info {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .done-info.show { display: flex; }
+
+    .done-stat {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+
+    .done-stat span:first-child { color: #9ca3af; }
+    .done-stat span:last-child { color: #a78bfa; font-weight: 600; }
+
+    .view-btn {
+      width: 100%;
+      padding: 10px;
+      background: #16a34a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 4px;
+    }
+
+    .view-btn:hover { opacity: 0.85; }
+
+    /* Not on YouTube warning */
+    #notYouTubeWarning {
+      display: none;
+      background: #1c1107;
+      border: 1px solid #92400e;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #fbbf24;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <span class="header-icon">🎬</span>
+    <div>
+      <h1>PlaylistGenius</h1>
+      <p>Watch Later → Smart Playlists</p>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- Not logged in -->
+    <div class="auth-error" id="authError">
+      <span class="icon">🔒</span>
+      <h2>Not Logged In</h2>
+      <p>Please log into PlaylistGenius first. Your Watch Later will sync automatically once you're logged in.</p>
+      <button class="login-btn" id="openLoginBtn">Open PlaylistGenius</button>
+    </div>
+
+    <!-- Logged in UI -->
+    <div class="main-ui" id="mainUI">
+
+      <div class="user-badge">
+        <div class="user-avatar" id="userAvatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Loading...</div>
+          <div class="user-sub">Logged in ✓</div>
+        </div>
+        <button class="logout-btn" id="logoutBtn" title="Logout">✕</button>
+      </div>
+
+      <div id="notYouTubeWarning">
+        ⚠️ Go to <strong>youtube.com/playlist?list=WL</strong> (Watch Later) first!
+      </div>
+
+      <div class="setting-row">
+        <label>Limit</label>
+        <input type="number" id="videoLimit" value="310" min="10" max="500" />
+        <label style="color:#6b7280; font-size:11px;">videos</label>
+      </div>
+
+      <button id="importBtn">
+        <span>⚡</span> Sync Watch Later
+      </button>
+
+      <div id="statusBox">
+        <div class="status-top">
+          <div class="spinner" id="spinner"></div>
+          <div id="statusText">Starting...</div>
+        </div>
+        <div class="progress-wrap">
+          <div id="progressBar"></div>
+        </div>
+        <div class="progress-label">
+          <span id="progressLeft"></span>
+          <span id="progressRight"></span>
+        </div>
+        <div class="done-info" id="doneInfo">
+          <div class="done-stat"><span>Playlists Created</span><span id="donePlaylistCount">-</span></div>
+          <div class="done-stat"><span>Videos Imported</span><span id="doneVideoCount">-</span></div>
+          <button class="view-btn" id="viewPlaylistsBtn">View My Playlists →</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

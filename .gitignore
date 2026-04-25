@@ -1,0 +1,39 @@
+# ── Python ────────────────────────────────────────────────────────────────
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+*.egg-info/
+dist/
+build/
+
+# ── Node / Next.js ────────────────────────────────────────────────────────
+node_modules/
+.next/
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+frontend/build_output.txt
+frontend/tsconfig.tsbuildinfo
+
+# ── Auto-generated API spec (re-generated from running server) ────────────
+openapi.json
+frontend/openapi.json
+
+# ── Personal / Pipeline data files ────────────────────────────────────────
+eatue/enriched_watchlater.json
+eatue/watchlater.json
+eatue/playlists.json
+eatue/venv/
+
+# ── OS ────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# ── Dev-only scripts ──────────────────────────────────────────────────────
+seed_test.py
+test_feed.py
